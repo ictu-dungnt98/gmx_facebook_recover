@@ -109,8 +109,11 @@ class Gmx:
 
     def click_alias_address(self):
         try:
-            element = self.driver.find_element(By.ID, "id8e")
+            iframe = self.driver.find_element(By.XPATH, "//*[@id=\"thirdPartyFrame_mail\"]")
+            self.driver.switch_to.frame(iframe)
+            element = self.driver.find_element(By.XPATH, "//*[@id=\"id8e\"]/div/div/div/ul/li[1]/div[2]/ul/li[5]/a")
             element.click()
+            self.driver.switch_to.default_content()
         except:
             print("click_alias_address not found text")
             return 0
