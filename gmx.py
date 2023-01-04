@@ -14,6 +14,8 @@ class Gmx:
     # open web page
     def open_url(self, url = "https:/gmx.com"):
         self.driver.get(url)
+        self.driver.maximize_window()
+        self.driver.implicitly_wait(10)
 
     # close ads
     def close_ads(self):
@@ -27,13 +29,15 @@ class Gmx:
 
     # close accept policy
     def close_policy(self):
-        print("accept policy")
-        try:
-            # element = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, "onetrust-accept-btn-handler")))
-            element = self.driver.find_element(By.ID, "onetrust-accept-btn-handler")
-            element.click()
-        except:
-            print("not found text")
+        iframe0 = self.driver.find_element(By.XPATH, "/html/body/div[3]/iframe")
+        self.driver.switch_to.frame(iframe0)
+
+        iframe1 = self.driver.find_element(By.XPATH, "/html/body/iframe")
+        self.driver.switch_to.frame(iframe1)
+
+        element = self.driver.find_element(By.ID, "onetrust-accept-btn-handler")
+        element.click()
+        self.driver.switch_to.default_content()
 
     def close_popup(self):
         parent = self.driver.current_window_handle
@@ -103,16 +107,10 @@ class Gmx:
 
     def click_setting(self):
         try:
-            # element = self.driver.find_element(By.XPATH, "//a[@id='navigationSettingsLink']")
-            # element.click()
-
-            # element = self.driver.find_element(By.ID, "navigationSettingsLink")
-            # element.click()
-
-            element = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, "//a[@id='navigationSettingsLink']")))
+            element = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, "//a[@id=\"navigationSettingsLink\"]")))
             element.click()
-        except:
-            print("click_setting not found text")
+        except Exception as e:
+            print(str(e))
             return 0
         else:
             return 1

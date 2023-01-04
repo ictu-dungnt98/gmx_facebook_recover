@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
     while(True):
         # gmx.close_ads()
-        # gmx.close_policy()
+        gmx.close_policy()
         # gmx.close_popup()
 
         if (step == 0):
@@ -39,7 +39,6 @@ if __name__ == "__main__":
                 ret = gmx.insert_username(user)
                 ret = gmx.insert_password(password)
                 if (ret):
-                    gmx.do_enter()
                     step = 1
         elif (step == 1):
             if (gmx.click_nav_mail()):
