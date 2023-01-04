@@ -15,6 +15,7 @@ class Gmx:
     def open_url(self, url = "https:/gmx.com"):
         self.driver.get(url)
         self.driver.maximize_window()
+        self.driver.implicitly_wait(5)
 
     # close ads
     def close_ads(self):
@@ -32,9 +33,11 @@ class Gmx:
             self.driver.switch_to.frame(iframe0)
 
             iframe1 = self.driver.find_element(By.XPATH, "/html/body/iframe")
+            # attrs = self.driver.execute_script('var items = {}; for (index = 0; index < arguments[0].attributes.length; ++index) { items[arguments[0].attributes[index].name] = arguments[0].attributes[index].value }; return items;', iframe1)
+            # print(attrs)
             self.driver.switch_to.frame(iframe1)
 
-            element = self.driver.find_element(By.ID, "onetrust-accept-btn-handler")
+            element = self.driver.find_element(By.XPATH, "/html/body/div/div[3]/div/div/div[2]/div/div/button")
             element.click()
             self.driver.switch_to.default_content()
         except:

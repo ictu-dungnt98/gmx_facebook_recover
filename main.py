@@ -1,15 +1,6 @@
 from gmx import Gmx
 import time
 import signal
-import cv2
-
-# stop this program
-interrupted = False
-def signal_handler(signal, frame):
-    global interrupted
-    interrupted = True
-signal.signal(signal.SIGINT, signal_handler)
-
 
 if __name__ == "__main__":
 
@@ -51,8 +42,4 @@ if __name__ == "__main__":
                 step = 4
         elif (step == 4):
             print("step 4")
-
-        # check stop signal
-        if interrupted:
-            quit()
     
