@@ -8,6 +8,7 @@ STEP_CLICK_NAV_MAIL = 2
 STEP_CLICK_SETTING = 3
 STEP_CLICK_ALIAS_SETTING = 4
 STEP_ADD_MAIL_DIE = 5
+STEP_DONE = 6
 
 if __name__ == "__main__":
 
@@ -46,6 +47,8 @@ if __name__ == "__main__":
                 ret = gmx.insert_password(password)
                 if (ret):
                     step = STEP_CLICK_NAV_MAIL
+            else:
+                gmx.refresh()
 
         elif (step == STEP_CLICK_NAV_MAIL):
             if (gmx.click_nav_mail()):
@@ -60,5 +63,14 @@ if __name__ == "__main__":
                 step = STEP_ADD_MAIL_DIE
 
         elif (step == STEP_ADD_MAIL_DIE):
-            print("STEP_ADD_MAIL_DIE")
-    
+            for num in range(1, 10):
+                if (number_mails_die >= num_mail_die_in_use):
+                    mail_die, mail_die_type = mails_die[num_mail_die_in_use].split("@")
+                    num_mail_die_in_use += 1
+
+                    gmx.fill_die_mail(mail_die)
+                    # gmx.fill_die_mail_type(mail_die_type)
+                    gmx.click_create_alias_address()
+            step = step + 1
+        elif (STEP_DONE):
+            print("done")
