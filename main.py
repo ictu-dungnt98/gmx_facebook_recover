@@ -2,44 +2,63 @@ from gmx import Gmx
 import time
 import signal
 
+STEP_READ_MAIL_LIVE = 0
+STEP_LOGIN = 1
+STEP_CLICK_NAV_MAIL = 2
+STEP_CLICK_SETTING = 3
+STEP_CLICK_ALIAS_SETTING = 4
+STEP_ADD_MAIL_DIE = 5
+
 if __name__ == "__main__":
 
-    # read file to get email
-    file = open("mail_live.txt", "r")
-    mails = file.readlines()
-    number_mails = len(mails)
-    using_mail = 0
+    # read file to get email live
+    file1 = open("mail_live.txt", "r")
+    mails_live = file1.readlines()
+    number_mails_live = len(mails_live)
+    num_mail_live_in_use = 0
+
+    # read file to get email die
+    file2 = open("mail_check.txt", "r")
+    mails_die = file2.readlines()
+    number_mails_die = len(mails_die)
+    num_mail_die_in_use = 0
 
     # GMX start
     gmx = Gmx()
     gmx.open_url("https:/gmx.com")
 
     #state machine
-    step = 0
+    step = STEP_READ_MAIL_LIVE
 
     while(True):
-        gmx.close_ads()
         gmx.close_policy()
-        # gmx.close_popup()
+        gmx.close_ads()
 
-        if (step == 0):
-            user, password = mails[using_mail].split(":")
-            print(user)
-            print(password)
+        if (step == STEP_READ_MAIL_LIVE):
+            if (number_mails_live >= num_mail_live_in_use):
+                user, password = mails_live[num_mail_live_in_use].split(":")
+                num_mail_live_in_use += 1
+                step = STEP_LOGIN
+
+        elif (step == STEP_LOGIN):
             if (gmx.click_login_btn()):
                 ret = gmx.insert_username(user)
                 ret = gmx.insert_password(password)
                 if (ret):
-                    step = 1
-        elif (step == 1):
+                    step = STEP_CLICK_NAV_MAIL
+
+        elif (step == STEP_CLICK_NAV_MAIL):
             if (gmx.click_nav_mail()):
-                step = 2
-        elif (step == 2):
+                step = STEP_CLICK_SETTING
+
+        elif (step == STEP_CLICK_SETTING):
             if (gmx.click_setting()):
-                step = 3
-        elif (step == 3):
+                step = STEP_CLICK_ALIAS_SETTING
+
+        elif (step == STEP_CLICK_ALIAS_SETTING):
             if (gmx.click_alias_address()):
-                step = 4
-        elif (step == 4):
-            print("step 4")
+                step = STEP_ADD_MAIL_DIE
+
+        elif (step == STEP_ADD_MAIL_DIE):
+            print("STEP_ADD_MAIL_DIE")
     
