@@ -27,7 +27,7 @@ if __name__ == "__main__":
     step = 0
 
     while(True):
-        # gmx.close_ads()
+        gmx.close_ads()
         gmx.close_policy()
         # gmx.close_popup()
 

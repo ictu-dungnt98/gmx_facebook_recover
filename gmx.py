@@ -15,45 +15,40 @@ class Gmx:
     def open_url(self, url = "https:/gmx.com"):
         self.driver.get(url)
         self.driver.maximize_window()
-        self.driver.implicitly_wait(10)
 
     # close ads
     def close_ads(self):
-        print("close ads")
+        print("close_ads")
         try:
-            # element = WebDriverWait(self.driver, 10).until(EC.text_to_be_present_in_element(By.CLASS_NAME, "js-shownomore"))
-            element = self.driver.find_element(By.CLASS_NAME, "js-shownomore")
+            element = self.driver.find_element(By.XPATH, "/html/body/div[2]/div/div/div[2]/a")
             element.click()
         except:
-            print("not found text")
+            print("close_ads not found text")
 
     # close accept policy
     def close_policy(self):
-        iframe0 = self.driver.find_element(By.XPATH, "/html/body/div[3]/iframe")
-        self.driver.switch_to.frame(iframe0)
+        try:
+            iframe0 = self.driver.find_element(By.XPATH, "/html/body/div[3]/iframe")
+            self.driver.switch_to.frame(iframe0)
 
-        iframe1 = self.driver.find_element(By.XPATH, "/html/body/iframe")
-        self.driver.switch_to.frame(iframe1)
+            iframe1 = self.driver.find_element(By.XPATH, "/html/body/iframe")
+            self.driver.switch_to.frame(iframe1)
 
-        element = self.driver.find_element(By.ID, "onetrust-accept-btn-handler")
-        element.click()
-        self.driver.switch_to.default_content()
-
-    def close_popup(self):
-        parent = self.driver.current_window_handle
-        uselessWindows = self.driver.window_handles
-        self.driver.switch_to.window(uselessWindows[-1])
-        self.driver.close()
-        self.driver.switch_to.window(uselessWindows[0])
+            element = self.driver.find_element(By.ID, "onetrust-accept-btn-handler")
+            element.click()
+            self.driver.switch_to.default_content()
+        except:
+            print("close_policy not found text")
 
     # login button
     def click_login_btn(self):
         print("login")
         try:
-            element = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.ID, "login-button")))
+            element = self.driver.find_element(By.ID, "login-button")
+            # element = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.ID, "login-button")))
             element.click()
         except:
-            print("not found text")
+            print("login not found text")
             return 0
         else:
             return 1
@@ -62,7 +57,8 @@ class Gmx:
     def insert_username(self, user):
         print("fill user")
         try:
-            element = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.ID, "login-email")))
+            # element = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.ID, "login-email")))
+            element = self.driver.find_element(By.ID, "login-email")
             element.send_keys(user)
         except:
             print("insert_username not found text")
@@ -74,7 +70,8 @@ class Gmx:
     def insert_password(self, password):
         print("fill password")
         try:
-            element = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.ID, "login-password")))
+            # element = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.ID, "login-password")))
+            element = self.driver.find_element(By.ID, "login-password")
             element.send_keys(password)
         except:
             print("insert_password not found text")
@@ -82,22 +79,10 @@ class Gmx:
         else:
             return 1
 
-    # do enter
-    def do_enter(self):
-        try:
-            element = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.ID, "login-password")))
-            element.send_keys(Keys.RETURN)
-        except:
-            print("do_enter not found text")
-            return 0
-        else:
-            return 1
-
-    # //*[name()='use' and @*='#nav_mail']
     def click_nav_mail(self):
         try:
-            # element = self.driver.find_element(By.XPATH, "//*[name()='use' and @*='#nav_mail']")
-            element = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, "//*[name()='use' and @*='#nav_mail']")))
+            # element = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, "//*[name()='use' and @*='#nav_mail']")))
+            element = self.driver.find_element(By.XPATH, "//*[name()='use' and @*='#nav_mail']")
             element.click()
         except:
             print("click_nav_mail not found text")
@@ -107,8 +92,12 @@ class Gmx:
 
     def click_setting(self):
         try:
-            element = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, "//a[@id=\"navigationSettingsLink\"]")))
+            iframe = self.driver.find_element(By.XPATH, "//*[@id=\"thirdPartyFrame_mail\"]")
+            self.driver.switch_to.frame(iframe)
+
+            element = self.driver.find_element(By.XPATH, "//a[@id=\"navigationSettingsLink\"]")
             element.click()
+            self.driver.switch_to.default_content()
         except Exception as e:
             print(str(e))
             return 0
