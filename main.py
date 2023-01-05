@@ -26,7 +26,7 @@ if __name__ == "__main__":
 
     # GMX start
     gmx = Gmx()
-    gmx.open_url("https:/gmx.com")
+    gmx.open_url()
 
     #state machine
     step = STEP_READ_MAIL_LIVE
@@ -63,14 +63,10 @@ if __name__ == "__main__":
                 step = STEP_ADD_MAIL_DIE
 
         elif (step == STEP_ADD_MAIL_DIE):
-            for num in range(1, 10):
-                if (number_mails_die >= num_mail_die_in_use):
-                    mail_die, mail_die_type = mails_die[num_mail_die_in_use].split("@")
-                    num_mail_die_in_use += 1
+            mail_die, mail_die_type = mails_die[num_mail_die_in_use].split("@")
+            num_mail_die_in_use += 1
 
-                    gmx.fill_die_mail(mail_die)
-                    # gmx.fill_die_mail_type(mail_die_type)
-                    gmx.click_create_alias_address()
+            gmx.fill_die_mail(mail_die, mail_die_type)
             step = step + 1
         elif (STEP_DONE):
             print("done")
