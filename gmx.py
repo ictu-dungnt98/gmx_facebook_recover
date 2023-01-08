@@ -5,6 +5,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.common.action_chains import ActionChains
 import time
 
 class Gmx:
@@ -51,33 +53,29 @@ class Gmx:
     # close accept policy
     def close_policy(self):
         try:
-            iframe0 = self.driver.find_element(By.XPATH, "//*[@class='permission-core-iframe")
+            iframe0 = self.driver.find_element(By.XPATH, "//*[@id=\"thirdPartyFrame_permission_dialog\"]")
             if (iframe0.is_displayed()):
                 self.driver.switch_to.frame(iframe0)
 
                 try:
                     self.driver.find_element(By.XPATH, "//*[@class='btn btn-secondary ghost']").click()
+                    self.driver.switch_to.default_content()
+                    return
                 except:
                     pass
 
                 try:
                     self.driver.find_element(By.ID, "onetrust-accept-btn-handler").click()
+                    self.driver.switch_to.default_content()
+                    return
                 except:
                     pass
 
-                self.driver.switch_to.frame(self.driver.find_element(By.XPATH, "/html/body/iframe"))
-                try:
-                    self.driver.find_element(By.XPATH, "//*[@class='btn btn-secondary ghost']").click()
-                except:
-                    pass
-
+                self.driver.switch_to.frame(self.driver.find_element(By.XPATH, "//*[@id=\"permission-iframe\"]"))
                 try:
                     self.driver.find_element(By.ID, "onetrust-accept-btn-handler").click()
-                except:
-                    pass
-
-                try:
-                    self.driver.find_element(By.ID, "accept-recommended-btn-handler").click()
+                    self.driver.switch_to.default_content()
+                    return
                 except:
                     pass
 
@@ -109,13 +107,16 @@ class Gmx:
         return 1
 
     def click_nav_mail(self):
-        try:
-            element = self.driver.find_element(By.XPATH, "//*[name()='use' and @*='#nav_mail']")
-            element.click()
-            self.driver.implicitly_wait(0.5)
-            return 1
-        except:
-            return 0
+        while (True):
+            try:
+                element = self.driver.find_element(By.XPATH, "//*[name()='use' and @*='#nav_mail']")
+                element.click()
+                self.driver.implicitly_wait(0.5)
+                return 1
+            except:
+                pass
+
+            self.close_policy()
 
     def click_setting(self):
         while (True):
@@ -150,20 +151,58 @@ class Gmx:
                     element.click()
             except:
                 pass
+            
             self.try_switch_to_default()
 
     def click_alias_address(self):
-        ret = 1
-        try:
-            self.driver.switch_to.frame(self.driver.find_element(By.NAME, "mail"))
-            element = self.driver.find_element(By.XPATH, "//*[text()='Alias Addresses']")
-            element.click()
-        except:
-            ret = 0
-        
-        self.try_switch_to_default()
+        while (True):
+            try:
+                self.driver.switch_to.frame(self.driver.find_element(By.NAME, "mail"))
+                element = self.driver.find_element(By.XPATH, "//*[text()='Alias Addresses']")
+                element.click()
+                return 1
+            except:
+                pass
 
-        return ret
+            self.try_switch_to_default()
+
+    def delete_old_mail(self):
+        while(True):
+            try:
+                self.driver.switch_to.frame(self.driver.find_element(By.NAME, "mail"))
+                elements = self.driver.find_elements(By.XPATH,"//*[@class='table_field table_col-12']")
+                len_elements = len(elements)
+                if (len_elements > 2):
+                    # delete old die email
+                    actions = ActionChains(self.driver)
+                    for i in range(0, len_elements):
+                        print(elements[i].text)
+                        if ("Default sender address" not in elements[i].text):
+                            if ("@" in elements[i].text):
+                                while (True):
+                                    try:
+                                        actions.move_to_element(elements[i]).perform()
+                                        delete_btn = self.driver.find_elements(By.XPATH, "//*[@class='table-hover_icon icon-link']")
+                                        if (len(delete_btn) >= 0):
+                                            try:
+                                                delete_btn[1].click()
+                                            except:
+                                                pass
+                                        try:
+                                            self.driver.find_element(By.XPATH, "//*[@data-webdriver='primary']").click()
+                                            self.driver.implicitly_wait(0.5)
+                                            break
+                                        except:
+                                            pass
+                                    except:
+                                        pass
+                    return
+                else:
+                    return
+            except:
+                pass
+                
+            self.try_switch_to_default()
 
     def fill_die_mail(self, die_mail, die_mail_type):
         print(die_mail)

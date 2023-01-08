@@ -7,8 +7,9 @@ STEP_LOGIN = 1
 STEP_CLICK_NAV_MAIL = 2
 STEP_CLICK_SETTING = 3
 STEP_CLICK_ALIAS_SETTING = 4
-STEP_ADD_MAIL_DIE = 5
-STEP_DONE = 6
+STEP_DELETE_OLD_MAIL = STEP_CLICK_ALIAS_SETTING + 1
+STEP_ADD_MAIL_DIE = STEP_DELETE_OLD_MAIL + 1
+STEP_DONE = STEP_ADD_MAIL_DIE + 1
 
 if __name__ == "__main__":
 
@@ -60,12 +61,16 @@ if __name__ == "__main__":
 
         elif (step == STEP_CLICK_ALIAS_SETTING):
             if (gmx.click_alias_address()):
-                step = STEP_ADD_MAIL_DIE
+                step = STEP_DELETE_OLD_MAIL
 
+        elif (step == STEP_DELETE_OLD_MAIL):
+            gmx.delete_old_mail()
+            step = STEP_ADD_MAIL_DIE
+            
         elif (step == STEP_ADD_MAIL_DIE):
             mail_die, mail_die_type = mails_die[num_mail_die_in_use].split("@")
             num_mail_die_in_use += 1
-
+            
             gmx.fill_die_mail(mail_die, mail_die_type)
             step = step + 1
         elif (STEP_DONE):
