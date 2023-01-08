@@ -33,9 +33,6 @@ if __name__ == "__main__":
     step = STEP_READ_MAIL_LIVE
 
     while(True):
-        gmx.close_policy()
-        gmx.close_ads()
-
         if (step == STEP_READ_MAIL_LIVE):
             if (number_mails_live >= num_mail_live_in_use):
                 user, password = mails_live[num_mail_live_in_use].split(":")
