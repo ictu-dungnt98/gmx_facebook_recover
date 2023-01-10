@@ -61,8 +61,8 @@ if __name__ == "__main__":
                 step = STEP_DELETE_OLD_MAIL
 
         elif (step == STEP_DELETE_OLD_MAIL):
-            gmx.delete_old_mail()
-            step = STEP_ADD_MAIL_DIE
+            if (gmx.delete_old_mail()):
+                step = STEP_ADD_MAIL_DIE
             
         elif (step == STEP_ADD_MAIL_DIE):
             mail_die, mail_die_type = mails_die[num_mail_die_in_use].split("@")

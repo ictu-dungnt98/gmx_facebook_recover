@@ -129,6 +129,8 @@ class Gmx:
             except:
                 pass
 
+            self.close_policy()
+
             self.try_switch_to_default()
 
             try:
@@ -151,6 +153,7 @@ class Gmx:
                     element.click()
             except:
                 pass
+
             
             self.try_switch_to_default()
 
@@ -167,42 +170,60 @@ class Gmx:
             self.try_switch_to_default()
 
     def delete_old_mail(self):
+        retry = 0
         while(True):
             try:
                 self.driver.switch_to.frame(self.driver.find_element(By.NAME, "mail"))
+
                 elements = self.driver.find_elements(By.XPATH,"//*[@class='table_field table_col-12']")
                 len_elements = len(elements)
-                if (len_elements > 2):
-                    # delete old die email
-                    actions = ActionChains(self.driver)
-                    for i in range(0, len_elements):
-                        print(elements[i].text)
-                        if ("Default sender address" not in elements[i].text):
-                            if ("@" in elements[i].text):
-                                while (True):
-                                    try:
-                                        actions.move_to_element(elements[i]).perform()
-                                        delete_btn = self.driver.find_elements(By.XPATH, "//*[@class='table-hover_icon icon-link']")
-                                        if (len(delete_btn) >= 0):
-                                            try:
-                                                delete_btn[1].click()
-                                            except:
-                                                pass
-                                        try:
-                                            self.driver.find_element(By.XPATH, "//*[@data-webdriver='primary']").click()
-                                            self.driver.implicitly_wait(0.5)
-                                            break
-                                        except:
-                                            pass
-                                    except:
-                                        pass
-                    return
-                else:
-                    return
-            except:
-                pass
+
+                # not found any old mail to delete
+                if (len_elements <= 2):
+                    return 1
                 
-            self.try_switch_to_default()
+                # found old-mail need be removed IL_C2F:
+                i = 0
+                actions = ActionChains(self.driver)
+                while (True):
+                    if (("Default sender address" in elements[i].text) or ("@" not in elements[i].text)):
+                        i += 1 # ignore two first lines
+                    else:
+                        while (i < len_elements):
+                            # move pointer to text line to make hover_icon visible
+                            try:
+                                actions.move_to_element(elements[i]).perform()
+                            except:
+                                pass
+                            
+                            while(True):
+                                try:
+                                    delete_btn = self.driver.find_elements(By.XPATH, "//*[@class='table-hover_icon icon-link']")
+                                    if (len(delete_btn) >= 0):
+                                        delete_btn[1].click()
+                                        break
+                                except:
+                                    i += 1
+                                    actions.move_to_element(elements[i]).perform()
+                                    self.driver.implicitly_wait(0.5)
+                                    pass
+                            
+                            while (True):
+                                # click accept notification
+                                try:
+                                    self.driver.find_element(By.XPATH, "//*[@data-webdriver='primary']").click()
+                                    self.driver.implicitly_wait(0.5)
+                                    i += 1
+                                    break
+                                except:
+                                    pass
+
+                        # end while
+                        return 1
+            except:
+                # if fail to locate element, try again
+                self.try_switch_to_default()
+                pass
 
     def fill_die_mail(self, die_mail, die_mail_type):
         print(die_mail)
