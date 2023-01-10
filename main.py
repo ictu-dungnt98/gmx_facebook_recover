@@ -1,4 +1,6 @@
 from gmx import Gmx
+from fb_getcode import Facebook
+
 import time
 import signal
 
@@ -9,7 +11,7 @@ STEP_CLICK_SETTING = 3
 STEP_CLICK_ALIAS_SETTING = 4
 STEP_DELETE_OLD_MAIL = STEP_CLICK_ALIAS_SETTING + 1
 STEP_ADD_MAIL_DIE = STEP_DELETE_OLD_MAIL + 1
-STEP_DONE = STEP_ADD_MAIL_DIE + 1
+STEP_GET_CODE = STEP_ADD_MAIL_DIE + 1
 
 if __name__ == "__main__":
 
@@ -24,6 +26,9 @@ if __name__ == "__main__":
     mails_die = file2.readlines()
     number_mails_die = len(mails_die)
     num_mail_die_in_use = 0
+
+    # get code
+    mail_get_code = mails_die[0]
 
     # GMX start
     gmx = Gmx()
@@ -65,10 +70,18 @@ if __name__ == "__main__":
                 step = STEP_ADD_MAIL_DIE
             
         elif (step == STEP_ADD_MAIL_DIE):
-            mail_die, mail_die_type = mails_die[num_mail_die_in_use].split("@")
-            num_mail_die_in_use += 1
+            if (num_mail_die_in_use < number_mails_die):
+                # add sub mail
+                mail_die, mail_die_type = mails_die[num_mail_die_in_use].split("@")
+                gmx.fill_die_mail(mail_die, mail_die_type)
+                # mail get code
+                mail_get_code = mails_die[num_mail_die_in_use]
+                # next step
+                num_mail_die_in_use += 1
+                step = step + 1
+        elif (STEP_GET_CODE):
+            fb = Facebook(gmx.driver, mail_get_code)
+            if (fb.get_code()):
+                print("done")
             
-            gmx.fill_die_mail(mail_die, mail_die_type)
-            step = step + 1
-        elif (STEP_DONE):
-            print("done")
+            step = STEP_DELETE_OLD_MAIL

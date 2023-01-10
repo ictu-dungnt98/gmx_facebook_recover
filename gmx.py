@@ -218,7 +218,7 @@ class Gmx:
                                 except:
                                     pass
 
-                        # end while
+                        # Not found mail to remove 
                         return 1
             except:
                 # if fail to locate element, try again
@@ -241,6 +241,9 @@ class Gmx:
                 element[0].click()
                 return
             except:
+                self.try_switch_to_default()
                 pass
-            
-            self.try_switch_to_default()
+    
+    def open_new_tab(self):
+        self.driver.find_elements(By.TAG_NAME, 'body').send_keys(Keys.COMMAND + 't')
+        self.driver.get('https://www.facebook.com/')
