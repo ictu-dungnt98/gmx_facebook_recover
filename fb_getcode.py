@@ -39,7 +39,7 @@ class Facebook:
         retry = 0
         while (True):
             try:
-                element = self.driver.find_element(By.NAME, "email")
+                element = self.driver.find_element(By.XPATH, "//*[@id=\"identify_email\"]")
                 element.clear()
                 element.send_keys(self.sub_mail)
                 self.driver.implicitly_wait(1)
@@ -60,31 +60,32 @@ class Facebook:
             retry += 1
             if (retry >= 60):
                 return 0
-    
+
     def get_code_step_2(self):
         retry = 0
         while (True):
             try:
                 if (self.driver.find_element(By.NAME, "recover_method").is_displayed()):
-                    elements = self.driver.find_elements(By.TAG_NAME, 'reset_action')
+                    elements = self.driver.find_elements(By.XPATH, "//*[@id=\"initiate_interstitial\"]/div[3]/div/div[1]/button")
                     elements[1].click()
                     self.driver.implicitly_wait(1)
                     return 1
                 else:
-                    print("Facebook not found this email account")
+                    print("Fail on click recover_method / reset_action")
                     return 0
             except:
                 pass
 
-            try:
-                if (self.driver.find_element(By.NAME, "email").is_displayed()):
-                    print("Facebook not found this email account")
-                    return 0
-            except:
-                pass
+            # try:
+            #     if (self.driver.find_element(By.NAME, "email").is_displayed()):
+            #         print("Facebook not found this email account")
+            #         return 0
+            # except:
+            #     pass
 
+            # //*[@id="initiate_interstitial"]/div[3]/div/div[1]/button
             try:
-                self.driver.find_element(By.NAME, "reset_action").click()
+                self.driver.find_element(By.XPATH, "//*[@id=\"initiate_interstitial\"]/div[3]/div/div[1]/button").click()
                 return 1
             except:
                 pass
@@ -111,6 +112,7 @@ class Facebook:
         if (self.get_code_step_1()):
             if (self.get_code_step_2()):
                 if (self.get_code_step_3()):
+                    # self.close()
                     return 1
-        self.close()
+                pass
         return 0

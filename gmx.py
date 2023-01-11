@@ -168,6 +168,7 @@ class Gmx:
                 pass
 
             self.try_switch_to_default()
+            self.close_policy()
 
     def delete_old_mail(self):
         retry = 0
