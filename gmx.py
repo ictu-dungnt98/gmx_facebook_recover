@@ -143,9 +143,15 @@ class Gmx:
             try:
                 if (self.driver.find_element(By.NAME, "permission_dialog").is_displayed()):
                     self.driver.switch_to.frame(self.driver.find_element(By.NAME, "permission_dialog"))
-                    self.driver.switch_to.frame(self.driver.find_element(By.NAME, "permission-iframe"))
+                    self.driver.switch_to.frame(self.driver.find_element(By.ID, "permission-iframe"))
                     try:
                         element = self.driver.find_element(By.XPATH, "//*[@class='btn btn-secondary ghost']")
+                        element.click()
+                    except:
+                        pass
+
+                    try:
+                        element = self.driver.find_element(By.ID, "onetrust-accept-btn-handler")
                         element.click()
                     except:
                         pass
@@ -246,15 +252,16 @@ class Gmx:
                 self.try_switch_to_default()
                 pass
     
-    def read_code_received(self):
+    def read_code_received(self, sub_mail):
         retry = 0
         while (True):
             try:
                 self.driver.switch_to.window(self.driver.window_handles[0])
-                while (retry < 20):
+                while (retry < 5):
                     self.driver.refresh()
                     self.driver.implicitly_wait(1)
                     num = 0
+                    code = []
 
                     # read code
                     while (True):
@@ -280,11 +287,55 @@ class Gmx:
                                     elements1[0].click()
                                     self.driver.implicitly_wait(1)
                                     break
-                                else:
-                                    print("len(code): {}", len(code))
                         except:
                             pass
-                    
-                    # save code into file
+
+                        self.try_switch_to_default()
+
+                        num += 1
+                        if (num >= 10):
+                            break
+
+                        self.driver.implicitly_wait(1)
+
+                    if (num >= 10):
+                        retry += 1
+                        continue
+
+                    # get uid
+                    while (True):
+                        self.try_switch_to_default()
+                        try:
+                            self.driver.switch_to.frame(self.driver.find_element(By.NAME, "mail"))
+                            self.driver.switch_to.frame(self.driver.find_element(By.NAME, "mail-display-content"))
+                            elements = self.driver.find_elements(By.XPATH, "//*[contains(@href,'deref-gmx.com/mail/client/')]")
+                            
+                            if (len(elements) > 0):
+                                if (sub_mail.split("@")[0] not in self.driver.page_source):
+                                    print("not found {}".format(sub_mail))
+                                    retry += 1
+                                    break
+                            
+                            href = elements[len(elements) - 1].get_attribute("href")
+                            print(href)
+                            cancel = regex.match("cancel%2F%3Fn%3D(.*?)%", href).group(1)
+                            cancel_str = __str__(cancel)
+                            uid = regex.match("id%3D(.*?)%", href).group(1)
+                            uid_str = __str__(uid)
+
+                            if (uid != ""):
+                                try:
+                                    self.try_switch_to_default()
+                                    self.driver.switch_to.frame(self.driver.find_element(By.NAME, "mail"))
+                                    self.driver.find_element(By.ID, "toolbarButtonDelete").click()
+                                except:
+                                    pass
+                                
+                                result = uid + "|" + cancel_str
+                                return result
+                        except:
+                            pass
+                print("invalid code")
+                return ""
             except:
                 pass

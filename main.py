@@ -13,6 +13,7 @@ STEP_DELETE_OLD_MAIL = STEP_CLICK_ALIAS_SETTING + 1
 STEP_ADD_MAIL_DIE = STEP_DELETE_OLD_MAIL + 1
 STEP_GET_CODE = STEP_ADD_MAIL_DIE + 1
 STEP_PARSE_CODE = STEP_GET_CODE + 1
+STEP_PARSE_CODE_DONE = STEP_PARSE_CODE + 1
 
 if __name__ == "__main__":
 
@@ -91,5 +92,9 @@ if __name__ == "__main__":
                 step = STEP_DELETE_OLD_MAIL
 
         elif (step == STEP_PARSE_CODE):
-            print(STEP_PARSE_CODE)
-            gmx.read_code_received()
+            print("parse code")
+            gmx.read_code_received(mail_get_code)
+            step = step + 1
+        elif (step == STEP_PARSE_CODE_DONE):
+            print("parse code done")
+            break
