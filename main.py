@@ -93,8 +93,12 @@ if __name__ == "__main__":
 
         elif (step == STEP_PARSE_CODE):
             print("parse code")
-            gmx.read_code_received(mail_get_code)
-            step = step + 1
+            result = gmx.read_code_received(mail_get_code)
+            print(result)
+            if (result != ""):
+                step = step + 1
+            else:
+                step = STEP_CLICK_NAV_MAIL
         elif (step == STEP_PARSE_CODE_DONE):
             print("parse code done")
             break
