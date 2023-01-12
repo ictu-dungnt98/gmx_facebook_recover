@@ -8,6 +8,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.action_chains import ActionChains
 import time
+import re as regex
 
 class Gmx:
     def __init__(self, path = "C:\Program Files (x86)\chromedriver.exe"):
@@ -245,6 +246,45 @@ class Gmx:
                 self.try_switch_to_default()
                 pass
     
-    def open_new_tab(self):
-        self.driver.find_elements(By.TAG_NAME, 'body').send_keys(Keys.COMMAND + 't')
-        self.driver.get('https://www.facebook.com/')
+    def read_code_received(self):
+        retry = 0
+        while (True):
+            try:
+                self.driver.switch_to.window(self.driver.window_handles[0])
+                while (retry < 20):
+                    self.driver.refresh()
+                    self.driver.implicitly_wait(1)
+                    num = 0
+
+                    # read code
+                    while (True):
+                        try:
+                            self.driver.switch_to.frame(self.driver.find_element(By.NAME, "mail"))
+                            self.driver.find_element(By.XPATH, "//*[contains(@class,'refresh navigation-tool-icon-link')]").click()
+                            self.driver.implicitly_wait(1)
+                        except:
+                            pass
+                        
+                        self.try_switch_to_default()
+
+                        try:
+                            self.driver.switch_to.frame(self.driver.find_element(By.NAME, "mail"))
+                            elements1 = self.driver.find_elements(By.XPATH, "//*[contains(@class,'name')]")
+                            elements2 = self.driver.find_elements(By.XPATH, "//*[contains(@class,'subject')]")
+
+                            # //*[@id="id69"]/td[2]/div[1]/div[1]
+                            if (elements1[0].text.__contains__("Facebook")):
+                                code = regex.findall("\d", elements2[0].text.split(" ")[0])
+                                print("code {}".format(code))
+                                if (len(code) == 6):
+                                    elements1[0].click()
+                                    self.driver.implicitly_wait(1)
+                                    break
+                                else:
+                                    print("len(code): {}", len(code))
+                        except:
+                            pass
+                    
+                    # save code into file
+            except:
+                pass

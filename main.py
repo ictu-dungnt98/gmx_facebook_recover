@@ -12,6 +12,7 @@ STEP_CLICK_ALIAS_SETTING = 4
 STEP_DELETE_OLD_MAIL = STEP_CLICK_ALIAS_SETTING + 1
 STEP_ADD_MAIL_DIE = STEP_DELETE_OLD_MAIL + 1
 STEP_GET_CODE = STEP_ADD_MAIL_DIE + 1
+STEP_PARSE_CODE = STEP_GET_CODE + 1
 
 if __name__ == "__main__":
 
@@ -79,9 +80,16 @@ if __name__ == "__main__":
                 # next step
                 num_mail_die_in_use += 1
                 step = step + 1
-        elif (STEP_GET_CODE):
+
+        elif (step ==  STEP_GET_CODE):
             fb = Facebook(gmx.driver, mail_get_code)
             if (fb.get_code()):
                 print("done")
-            
-            step = STEP_DELETE_OLD_MAIL
+                step = STEP_PARSE_CODE
+            else:
+                print("get code fail")
+                step = STEP_DELETE_OLD_MAIL
+
+        elif (step == STEP_PARSE_CODE):
+            print(STEP_PARSE_CODE)
+            gmx.read_code_received()

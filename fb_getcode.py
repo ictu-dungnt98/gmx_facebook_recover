@@ -108,11 +108,15 @@ class Facebook:
                 return 0
 
     def get_code(self):
-        self.open_recovery_page()
-        if (self.get_code_step_1()):
-            if (self.get_code_step_2()):
-                if (self.get_code_step_3()):
-                    # self.close()
-                    return 1
-                pass
-        return 0
+        try:
+            self.open_recovery_page()
+            if (self.get_code_step_1()):
+                if (self.get_code_step_2()):
+                    if (self.get_code_step_3()):
+                        print("close")
+                        self.close()
+                        return 1
+            return 0
+        except:
+            print("get_code")
+            pass
