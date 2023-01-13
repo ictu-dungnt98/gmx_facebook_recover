@@ -308,7 +308,7 @@ class Gmx:
                         try:
                             self.driver.switch_to.frame(self.driver.find_element(By.NAME, "mail"))
                             self.driver.switch_to.frame(self.driver.find_element(By.NAME, "mail-display-content"))
-                            elements = self.driver.find_elements(By.XPATH, "//*[contains(@href,'deref-gmx.com/mail/client/')]")
+                            elements = self.driver.find_elements(By.XPATH, "//*[@id=\"email_content\"]/table/tbody/tr[4]/td[2]/table/tbody/tr[2]/td/span/span/a")
                             
                             if (len(elements) > 0):
                                 if (sub_mail.split("@")[0] not in self.driver.page_source):
@@ -318,10 +318,11 @@ class Gmx:
                             
                             href = elements[len(elements) - 1].get_attribute("href")
                             print(href)
-                            cancel = regex.match("cancel%2F%3Fn%3D(.*?)%", href).group(1)
-                            cancel_str = __str__(cancel)
-                            uid = regex.match("id%3D(.*?)%", href).group(1)
-                            uid_str = __str__(uid)
+                            partern = regex.compile('cancel%2F%3Fn%3D(.*?)%')
+                            code = regex.findall(partern, href)[0]
+                            print("code: " + code)
+                            uid = regex.findall("id%3D(.*?)%", href)[0]
+                            print("uid: " + uid)
 
                             if (uid != ""):
                                 try:
@@ -331,7 +332,7 @@ class Gmx:
                                 except:
                                     pass
                                 
-                                result = uid + "|" + cancel_str
+                                result = uid + "|" + code
                                 return result
                         except:
                             pass

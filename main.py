@@ -93,9 +93,10 @@ if __name__ == "__main__":
 
         elif (step == STEP_PARSE_CODE):
             print("parse code")
-            result = gmx.read_code_received(mail_get_code)
-            print(result)
-            if (result != ""):
+            uid_code = gmx.read_code_received(mail_get_code)
+            if (uid_code != ""):
+                mail_uid_code = mail_get_code + '|' + result
+                print(mail_uid_code)
                 step = step + 1
             else:
                 step = STEP_CLICK_NAV_MAIL
