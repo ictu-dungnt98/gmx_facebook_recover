@@ -1,8 +1,8 @@
 from gmx import Gmx
 from fb_getcode import Facebook
-
 import time
 import signal
+import os
 
 STEP_READ_MAIL_LIVE = 0
 STEP_LOGIN = 1
@@ -16,7 +16,6 @@ STEP_PARSE_CODE = STEP_GET_CODE + 1
 STEP_PARSE_CODE_DONE = STEP_PARSE_CODE + 1
 
 if __name__ == "__main__":
-
     # read file to get email live
     file1 = open("mail_live.txt", "r")
     mails_live = file1.readlines()
@@ -31,6 +30,12 @@ if __name__ == "__main__":
 
     # get code
     mail_get_code = mails_die[0]
+
+    # clear output file
+    try:
+        os.remove("output.txt")
+    except:
+        pass
 
     # GMX start
     gmx = Gmx()
@@ -81,6 +86,10 @@ if __name__ == "__main__":
                 # next step
                 num_mail_die_in_use += 1
                 step = step + 1
+            else:
+                # do not have any submail to add
+                print("Het mail roi")
+                step = STEP_PARSE_CODE_DONE
 
         elif (step ==  STEP_GET_CODE):
             fb = Facebook(gmx.driver, mail_get_code)
@@ -95,8 +104,15 @@ if __name__ == "__main__":
             print("parse code")
             uid_code = gmx.read_code_received(mail_get_code)
             if (uid_code != ""):
-                mail_uid_code = mail_get_code + '|' + result
+                mail_uid_code = mail_get_code + '|' + uid_code
                 print(mail_uid_code)
+
+                # save 
+                f = open("output.txt", "a")
+                f.writelines(t1)
+                f.writelines("\n")
+                f.close()
+
                 step = step + 1
             else:
                 step = STEP_CLICK_NAV_MAIL

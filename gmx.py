@@ -115,6 +115,7 @@ class Gmx:
                 self.driver.implicitly_wait(0.5)
                 return 1
             except:
+                self.try_switch_to_default()
                 pass
 
             self.close_policy()
@@ -283,7 +284,7 @@ class Gmx:
                             if (elements1[0].text.__contains__("Facebook")):
                                 code = regex.findall("\d", elements2[0].text.split(" ")[0])
                                 print("code {}".format(code))
-                                if (len(code) == 6):
+                                if (len(code) == 6 or len(code) == 8):
                                     elements1[0].click()
                                     self.driver.implicitly_wait(1)
                                     break
@@ -307,9 +308,13 @@ class Gmx:
                         self.try_switch_to_default()
                         try:
                             self.driver.switch_to.frame(self.driver.find_element(By.NAME, "mail"))
-                            self.driver.switch_to.frame(self.driver.find_element(By.NAME, "mail-display-content"))
-                            elements = self.driver.find_elements(By.XPATH, "//*[@id=\"email_content\"]/table/tbody/tr[4]/td[2]/table/tbody/tr[2]/td/span/span/a")
-                            
+
+                            try:
+                                self.driver.switch_to.frame(self.driver.find_element(By.XPATH, "//*[@id=\"mail-detail\"]"))
+                                elements = self.driver.find_elements(By.XPATH, "//*[@id=\"email_content\"]/table/tbody/tr[4]/td[2]/table/tbody/tr[2]/td/span/span/a")
+                            except:
+                                return ""
+                                
                             if (len(elements) > 0):
                                 if (sub_mail.split("@")[0] not in self.driver.page_source):
                                     print("not found {}".format(sub_mail))
@@ -329,6 +334,7 @@ class Gmx:
                                     self.try_switch_to_default()
                                     self.driver.switch_to.frame(self.driver.find_element(By.NAME, "mail"))
                                     self.driver.find_element(By.ID, "toolbarButtonDelete").click()
+                                    print("click delete email message")
                                 except:
                                     pass
                                 
