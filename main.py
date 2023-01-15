@@ -32,10 +32,10 @@ if __name__ == "__main__":
     mail_get_code = mails_die[0]
 
     # clear output file
-    try:
-        os.remove("output.txt")
-    except:
-        pass
+    # try:
+    #     os.remove("output.txt")
+    # except:
+    #     pass
 
     # GMX start
     gmx = Gmx()
@@ -80,7 +80,9 @@ if __name__ == "__main__":
             if (num_mail_die_in_use < number_mails_die):
                 # add sub mail
                 mail_die, mail_die_type = mails_die[num_mail_die_in_use].split("@")
-                gmx.fill_die_mail(mail_die, mail_die_type)
+                if (gmx.fill_die_mail(mail_die, mail_die_type) == 0):
+                    num_mail_die_in_use += 1
+                    step = STEP_CLICK_ALIAS_SETTING
                 # mail get code
                 mail_get_code = mails_die[num_mail_die_in_use].split("\n")[0]
                 # next step
@@ -116,5 +118,4 @@ if __name__ == "__main__":
             else:
                 step = STEP_CLICK_NAV_MAIL
         elif (step == STEP_PARSE_CODE_DONE):
-            print("parse code done")
-            break
+            pass

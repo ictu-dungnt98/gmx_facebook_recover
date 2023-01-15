@@ -126,7 +126,7 @@ class Gmx:
                 self.driver.switch_to.frame(self.driver.find_element(By.NAME, "mail"))
                 element = self.driver.find_element(By.XPATH, "//*[@data-webdriver='FolderNavigation:MailCollectorLink']")
                 element.click()
-                self.driver.implicitly_wait(0.5)
+                self.driver.implicitly_wait(1)
                 return 1
             except:
                 pass
@@ -179,10 +179,12 @@ class Gmx:
             try:
                 element = self.driver.find_element(By.XPATH, "//*[text()='Alias Addresses']")
                 element.click()
+                return 1
             except:
                 pass
             
             self.close_policy()
+            self.driver.implicitly_wait(1)
 
     def delete_old_mail(self):
         retry = 0
@@ -254,7 +256,13 @@ class Gmx:
         
                 element = self.driver.find_elements(By.XPATH, "//*[@class='m-button button-secondary button-size-normal']")
                 element[0].click()
-                return
+
+                #check result add mail
+                # //*[@id="id1204"]/div/div/h4
+                result = self.driver.page_source
+                if (result.__contains__("is not available!") or result.__contains__("ist nicht verfügbar")):
+                    return 0
+                return 1
             except:
                 self.try_switch_to_default()
                 pass
@@ -339,7 +347,7 @@ class Gmx:
                                 try:
                                     self.try_switch_to_default()
                                     self.driver.switch_to.frame(self.driver.find_element(By.NAME, "mail"))
-                                    self.driver.find_element(By.ID, "toolbarButtonDelete").click()
+                                    self.driver.find_element(By.XPATH, "//*[@id=\"toolbarButtonDelete\"]").click()
                                     print("click delete email message")
                                 except:
                                     pass
