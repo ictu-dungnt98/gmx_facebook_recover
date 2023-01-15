@@ -176,6 +176,12 @@ class Gmx:
                 pass
 
             self.try_switch_to_default()
+            try:
+                element = self.driver.find_element(By.XPATH, "//*[text()='Alias Addresses']")
+                element.click()
+            except:
+                pass
+            
             self.close_policy()
 
     def delete_old_mail(self):
@@ -314,7 +320,7 @@ class Gmx:
                                 elements = self.driver.find_elements(By.XPATH, "//*[@id=\"email_content\"]/table/tbody/tr[4]/td[2]/table/tbody/tr[2]/td/span/span/a")
                             except:
                                 return ""
-                                
+
                             if (len(elements) > 0):
                                 if (sub_mail.split("@")[0] not in self.driver.page_source):
                                     print("not found {}".format(sub_mail))

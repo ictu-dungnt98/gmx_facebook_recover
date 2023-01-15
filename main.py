@@ -82,7 +82,7 @@ if __name__ == "__main__":
                 mail_die, mail_die_type = mails_die[num_mail_die_in_use].split("@")
                 gmx.fill_die_mail(mail_die, mail_die_type)
                 # mail get code
-                mail_get_code = mails_die[num_mail_die_in_use]
+                mail_get_code = mails_die[num_mail_die_in_use].split("\n")[0]
                 # next step
                 num_mail_die_in_use += 1
                 step = step + 1
@@ -104,13 +104,12 @@ if __name__ == "__main__":
             print("parse code")
             uid_code = gmx.read_code_received(mail_get_code)
             if (uid_code != ""):
-                mail_uid_code = mail_get_code + '|' + uid_code
+                mail_uid_code = "{}|{}\n".format(mail_get_code, uid_code)
                 print(mail_uid_code)
 
                 # save 
                 f = open("output.txt", "a")
-                f.writelines(t1)
-                f.writelines("\n")
+                f.writelines(mail_uid_code)
                 f.close()
 
                 step = step + 1
