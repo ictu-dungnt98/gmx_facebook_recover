@@ -181,9 +181,9 @@ class Browser:
     def insert_new_user(self, user):
         try:
             element = self.driver.find_element(By.XPATH, "//*[@id='newUsername']")
-            while(element.text != ""):
-                element.send_keys(Keys.BACK_SPACE)
-
+            current_content = element.get_attribute("textContent")
+            print("Current content:", current_content)
+            self.driver.execute_script("arguments[0].textContent = '';", element)
             element.send_keys(user)
         except:
             return 0
@@ -194,8 +194,9 @@ class Browser:
     def insert_confirm_password(self, password):
         try:
             element = self.driver.find_element(By.XPATH, "//*[@id='oldPassword']")
-            while(element.text != ""):
-                element.send_keys(Keys.BACK_SPACE)
+            current_content = element.get_attribute("textContent")
+            print("Current content:", current_content)
+            self.driver.execute_script("arguments[0].textContent = '';", element)
             element.send_keys(password)
         except:
             return 0
@@ -203,7 +204,6 @@ class Browser:
             return 1
 
     def fill_confirmuser_newusername(self, confirm_password, new_username):
-        print("fill_confirmuser_newusername")
         if (self.insert_confirm_password(confirm_password) == 0):
             return 0
         
@@ -214,8 +214,10 @@ class Browser:
             return 0
 
         if (self.click_sign_in_success()):
+            print("add mail success")
             return 1
         else:
+            print("add mail fail")
             return 2
 
         #check result add mail
