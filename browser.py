@@ -158,7 +158,6 @@ class Browser:
         try:
             wait = WebDriverWait(self.driver, 10)  # Maximum wait time of 10 seconds
             element = wait.until(EC.presence_of_element_located((By.ID, "user")))
-            # element = self.driver.find_element(By.ID, "user")
             self.driver.execute_script("arguments[0].value = '';", element)
             element.clear()
             element.send_keys(user)
@@ -173,48 +172,80 @@ class Browser:
         try:
             wait = WebDriverWait(self.driver, 10)  # Maximum wait time of 10 seconds
             element = wait.until(EC.presence_of_element_located((By.ID, "passwd")))
-            # element = self.driver.find_element(By.ID, "passwd")
             self.driver.execute_script("arguments[0].value = '';", element)
             element.clear()
             element.send_keys(password)
+            return 1
         except:
             return 0
-        else:
-            return 1
+
+    def context_insert_login_mail(self):
+        print("context_insert_login_mail")
+        try:
+            wait = WebDriverWait(self.driver, 10)  # Maximum wait time of 10 seconds
+            element = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='right']/div/form/prism-text[1]")))
+            print(element.text)
+            if (element.text.__contains__("Sign in with your Xfinity ID")):
+                print("correct context")
+                return 1
+            else:
+                return 0
+        except:
+            return 0
+
+    def context_insert_login_pass(self):
+        print("context_insert_login_pass")
+        try:
+            wait = WebDriverWait(self.driver, 10)  # Maximum wait time of 10 seconds
+            element = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='right']/div/form/prism-text[2]")))
+            print(element.text)
+            if (element.text.__contains__("Enter your password to sign in securely")):
+                print("correct context")
+                return 1
+            else:
+                return 0
+        except:
+            return 0
+
+    def context_add_mail(self):
+        print("context_add_mail")
+        try:
+            wait = WebDriverWait(self.driver, 10)  # Maximum wait time of 10 seconds
+            element = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='page-content']/div/div/div/form/div[1]/h1")))
+            print(element.text)
+            if (element.text.__contains__("Update Your Xfinity Username")):
+                print("correct context")
+                return 1
+            else:
+                return 0
+        except:
+            return 0
 
     # confirm-password
     def insert_confirm_password(self, password):
         try:
             wait = WebDriverWait(self.driver, 10)  # Maximum wait time of 10 seconds
             element = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='oldPassword']")))
-            # element = self.driver.find_element(By.XPATH, "//*[@id='oldPassword']")
             self.driver.execute_script("arguments[0].value = '';", element)
             element.clear()
             element.send_keys(password)
+            return 1
         except:
             print("fill confirm pass fail")
             return 0
-        else:
-            element = self.driver.find_element(By.XPATH, "//*[@id='oldPassword']")
-            print("Current pass:", element.text)
-            return 1
 
     # new-user
     def insert_new_user(self, user):
         try:
             wait = WebDriverWait(self.driver, 10)  # Maximum wait time of 10 seconds
             element = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='newUsername']")))
-            # element = self.driver.find_element(By.XPATH, "//*[@id='newUsername']")
             element.clear()
             self.driver.execute_script("arguments[0].value = '';", element)
             element.send_keys(user)
+            return 1
         except:
             print("fill new user fail")
             return 0
-        else:
-            element = self.driver.find_element(By.XPATH, "//*[@id='newUsername']")
-            print("Current user:", element.text)
-            return 1
 
     # button save
     def click_save(self):
@@ -236,12 +267,11 @@ class Browser:
             wait = WebDriverWait(self.driver, 5)  # Maximum wait time of 10 seconds
             element = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='page-content']/div/div/div/a")))
             element.click()
+            print("check_save_mail success")
+            return 1
         except:
             print("check_save_mail not found text")
             return 0
-        else:
-            print("check_save_mail success")
-            return 1
 
     def check_save_fail(self):
         try:
@@ -250,10 +280,9 @@ class Browser:
             print(element.text)
             if (element.text.__contains__("This username is already taken")):
                 print("This username is already taken")
+                return 1
         except:
             return 0
-        else:
-            return 1
     
     def check_same_old_user(self):
         try:
@@ -262,12 +291,11 @@ class Browser:
             print(element.text)
             if (element.text.__contains__("Your new username cannot be the same as your old username")):
                 print("Your new username cannot be the same as your old username")
+                return 1
         except:
             return 0
-        else:
-            return 1
 
-    def fill_confirmuser_newusername(self, confirm_password, new_username):
+    def add_sub_mail(self, confirm_password, new_username):
         if (self.insert_confirm_password(confirm_password) == 0):
             return 0
         

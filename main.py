@@ -17,6 +17,7 @@ STEP_CLOSE_TAB = STEP_CLICK_CONTINUE + 1
 NEXT_STEP = STEP_CLOSE_TAB + 1
 
 _exit = 0
+login_user, login_pass = "", ""
 
 # Define a signal handler function
 def signal_handler(sig, frame):
@@ -61,7 +62,14 @@ if __name__ == "__main__":
 
         if (browser.check_page_working_2() == 1):
             continue
-        
+
+        if (browser.context_insert_login_mail()):
+            step = STEP_LOGIN_FILL_USER
+        elif (browser.context_insert_login_pass()):
+            step = STEP_LOGIN_FILL_PASS
+        elif (browser.context_add_mail()):
+            step = STEP_ADD_MAIL
+
         if (step == STEP_OPEN_URL):
             ret = browser.open_url("https://customer.xfinity.com/users/me/update-username")
             if (ret == 1):
@@ -87,8 +95,8 @@ if __name__ == "__main__":
         elif (step == STEP_ADD_MAIL):
             if (num_emails_add_in_use < number_emails_add):
                 new_user_name, misc = emails_add[num_emails_add_in_use].split("@")
-                ret = browser.fill_confirmuser_newusername(login_pass, new_user_name)
-                
+                # add sub mail
+                ret = browser.add_sub_mail(login_pass, new_user_name)
                 if (ret == 0):
                     continue
 
@@ -120,6 +128,8 @@ if __name__ == "__main__":
                     step = STEP_CLOSE_TAB
                 else:
                     step += 1
+            else:
+                step += 1
 
         elif (step == STEP_CLICK_CONTINUE):
             ret = browser.check_try_another_way()
