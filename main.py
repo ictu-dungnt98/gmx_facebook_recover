@@ -4,7 +4,8 @@ import time
 import signal
 import os
 
-STEP_READ_EMAIL_LOGIN = 0
+STEP_OPEN_URL = 0
+STEP_READ_EMAIL_LOGIN = STEP_OPEN_URL + 1
 STEP_LOGIN_FILL_USER = STEP_READ_EMAIL_LOGIN + 1
 STEP_LOGIN_FILL_PASS = STEP_LOGIN_FILL_USER + 1
 STEP_ADD_MAIL = STEP_LOGIN_FILL_PASS + 1
@@ -46,12 +47,11 @@ if __name__ == "__main__":
 
     # GMX start
     browser = Browser()
-    ret = browser.open_url("https://customer.xfinity.com/users/me/update-username")
-    if (ret == 0):
-        exit(-1)
 
     # state machine
-    step = STEP_READ_EMAIL_LOGIN
+    step = STEP_OPEN_URL
+    retry = 0
+    try_login = 0
 
     while (True):
         if _exit == 1:
@@ -62,32 +62,26 @@ if __name__ == "__main__":
 
         if (browser.check_page_working_2() == 1):
             continue
+        
+        if (step == STEP_OPEN_URL):
+            ret = browser.open_url("https://customer.xfinity.com/users/me/update-username")
+            if (ret == 1):
+                step = STEP_READ_EMAIL_LOGIN
 
-        if (step == STEP_READ_EMAIL_LOGIN):
-            if (number_emails_login >= num_mail_login_in_use):
+        elif (step == STEP_READ_EMAIL_LOGIN):
+            if (num_mail_login_in_use < number_emails_login):
                 login_user, login_pass = login_emails[num_mail_login_in_use].split("|")
                 num_mail_login_in_use += 1
                 step = STEP_LOGIN_FILL_USER
 
         elif (step == STEP_LOGIN_FILL_USER):
             ret = browser.insert_username(login_user)
-            if (ret == 0):
-                browser.refresh()
-                continue
-
-            ret = browser.click_lets_go()
-            if (ret == 0):
-                browser.refresh()
-                continue
-
-            step = STEP_LOGIN_FILL_PASS
+            if (ret):
+                ret = browser.click_lets_go()
+                step = STEP_LOGIN_FILL_PASS
 
         elif (step == STEP_LOGIN_FILL_PASS):
             ret = browser.insert_password(login_pass)
-            if (ret == 0):
-                browser.refresh()
-                continue
-            
             if (ret):
                 step = STEP_ADD_MAIL
 
@@ -98,11 +92,11 @@ if __name__ == "__main__":
                 
                 if (ret == 0):
                     continue
-                
-                if (ret == 1):
+
+                if (ret == 2):
                     num_emails_add_in_use += 1
                     continue
-            
+
                 if (ret == 1):
                     step = step + 1
 
