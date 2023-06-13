@@ -59,6 +59,12 @@ class Browser:
     def close(self):
         self.driver.close()
 
+    def close_current_tab(self):
+        # Close the current tab
+        self.driver.close()
+        # Switch back to the original tab (if needed)
+        self.driver.switch_to.window(self.driver.window_handles[0])
+
     def quit(self):
         self.driver.quit()
 
@@ -326,4 +332,31 @@ class Browser:
             return 0
         else:
             print("click_continue success")
+            return 1
+    
+    # //*[@id="identify_yourself_flow"]/div/div[2]/div[1]/div[2]
+    def check_search_email(self):
+        try:
+            wait = WebDriverWait(self.driver, 5)  # Maximum wait time of 10 seconds
+            element = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='identify_yourself_flow']/div/div[2]/div[1]/div[2]")))
+            print(element.text)
+            if (element.text.__contains__("Your search did not return any results")):
+                print("Your search did not return any results")
+        except:
+            return 0
+        else:
+            return 1
+
+    # //*[@id="loginform"]/div[4]/a
+    def check_try_another_way(self):
+        print("check_try_another_way")
+        try:
+            wait = WebDriverWait(self.driver, 5)  # Maximum wait time of 10 seconds
+            element = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='loginform']/div[4]/a")))
+            element.click()
+        except:
+            print("check_try_another_way not found text")
+            return 0
+        else:
+            print("check_try_another_way success")
             return 1

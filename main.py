@@ -13,7 +13,8 @@ STEP_REQUEST_FB_CODE = STEP_ADD_MAIL + 1
 STEP_FILL_EMAIL_RECOVER = STEP_REQUEST_FB_CODE + 1
 STEP_FIND = STEP_FILL_EMAIL_RECOVER + 1
 STEP_CLICK_CONTINUE = STEP_FIND + 1
-NEXT_STEP = STEP_CLICK_CONTINUE + 1
+STEP_CLOSE_TAB = STEP_CLICK_CONTINUE + 1
+NEXT_STEP = STEP_CLOSE_TAB + 1
 
 _exit = 0
 
@@ -114,12 +115,23 @@ if __name__ == "__main__":
         elif (step == STEP_FIND):
             ret = browser.click_find()
             if (ret == 1):
-                step += 1
+                ret = browser.check_search_email()
+                if (ret == 1):
+                    step = STEP_CLOSE_TAB
+                else:
+                    step += 1
 
         elif (step == STEP_CLICK_CONTINUE):
-            ret = browser.click_continue()
+            ret = browser.check_try_another_way()
             if (ret == 1):
-                step += 1
-        
-        elif (step == NEXT_STEP):
-            pass
+                ret = browser.click_continue()
+                if (ret == 1):
+                    step += 1
+            else:
+                ret = browser.click_continue()
+                if (ret == 1):
+                    step += 1
+
+        elif (step == STEP_CLOSE_TAB):
+            browser.close_current_tab()
+            step = STEP_READ_EMAIL_LOGIN
