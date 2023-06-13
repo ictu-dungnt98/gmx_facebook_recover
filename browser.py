@@ -71,6 +71,13 @@ class Browser:
             self.driver.switch_to.default_content()
         except:
             pass
+    def open_new_tab(self, url):
+        self.driver.execute_script("window.open('');")
+        # Switch to the newly opened tab
+        self.driver.switch_to.window(self.driver.window_handles[-1])
+        # Navigate to a webpage in the new tab
+        self.driver.get(url)
+        return 1
 
     # close ads
     def close_ads(self):
@@ -222,7 +229,6 @@ class Browser:
         try:
             wait = WebDriverWait(self.driver, 5)  # Maximum wait time of 10 seconds
             element = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='page-content']/div/div/div/a")))
-            # element = self.driver.find_element(By.XPATH, "//*[@id='page-content']/div/div/div/a")
             element.click()
         except:
             print("check_save_mail not found text")
@@ -235,11 +241,21 @@ class Browser:
         try:
             wait = WebDriverWait(self.driver, 5)  # Maximum wait time of 10 seconds
             element = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='page-content']/div/div/div/form/p")))
-            # element = self.driver.find_element(By.XPATH, "//*[@id='page-content']/div/div/div/form/p").text
             print(element.text)
             if (element.text.__contains__("This username is already taken")):
                 print("This username is already taken")
-                self.refresh()
+        except:
+            return 0
+        else:
+            return 1
+    
+    def check_same_old_user(self):
+        try:
+            wait = WebDriverWait(self.driver, 5)  # Maximum wait time of 10 seconds
+            element = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='error_newUsername']")))
+            print(element.text)
+            if (element.text.__contains__("Your new username cannot be the same as your old username")):
+                print("Your new username cannot be the same as your old username")
         except:
             return 0
         else:
@@ -262,5 +278,52 @@ class Browser:
                 return 2
 
             if (self.check_save_success()):
-                print("add mail success")
+                print("add mail success: " + new_username)
                 return 1
+            
+            if (self.check_same_old_user()):
+                return 2
+
+
+    # //*[@id="identify_email"]
+    def fill_email_recover(self, email):
+        print("email_recover: " + email)
+        try:
+            wait = WebDriverWait(self.driver, 10)  # Maximum wait time of 10 seconds
+            element = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='identify_email']")))
+            element.clear()
+            self.driver.execute_script("arguments[0].value = '';", element)
+            element.send_keys(email)
+        except:
+            print("fill_email_recover fail")
+            return 0
+        else:
+            return 1
+
+    #//*[@id="did_submit"]
+    def click_find(self):
+        print("click_find")
+        try:
+            wait = WebDriverWait(self.driver, 5)  # Maximum wait time of 10 seconds
+            element = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='did_submit']")))
+            element.click()
+        except:
+            print("click_find not found text")
+            return 0
+        else:
+            print("click_find success")
+            return 1
+
+    #//*[@id="initiate_interstitial"]/div[3]/div/div[1]/button
+    def click_continue(self):
+        print("click_continue")
+        try:
+            wait = WebDriverWait(self.driver, 5)  # Maximum wait time of 10 seconds
+            element = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='initiate_interstitial']/div[3]/div/div[1]/button")))
+            element.click()
+        except:
+            print("click_continue not found text")
+            return 0
+        else:
+            print("click_continue success")
+            return 1

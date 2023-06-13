@@ -10,12 +10,10 @@ STEP_LOGIN_FILL_USER = STEP_READ_EMAIL_LOGIN + 1
 STEP_LOGIN_FILL_PASS = STEP_LOGIN_FILL_USER + 1
 STEP_ADD_MAIL = STEP_LOGIN_FILL_PASS + 1
 STEP_REQUEST_FB_CODE = STEP_ADD_MAIL + 1
-STEP_CLICK_ALIAS_SETTING = STEP_REQUEST_FB_CODE + 1
-STEP_DELETE_OLD_MAIL = STEP_CLICK_ALIAS_SETTING + 1
-STEP_ADD_MAIL_DIE = STEP_DELETE_OLD_MAIL + 1
-STEP_GET_CODE = STEP_ADD_MAIL_DIE + 1
-STEP_PARSE_CODE = STEP_GET_CODE + 1
-STEP_PARSE_CODE_DONE = STEP_PARSE_CODE + 1
+STEP_FILL_EMAIL_RECOVER = STEP_REQUEST_FB_CODE + 1
+STEP_FIND = STEP_FILL_EMAIL_RECOVER + 1
+STEP_CLICK_CONTINUE = STEP_FIND + 1
+NEXT_STEP = STEP_CLICK_CONTINUE + 1
 
 _exit = 0
 
@@ -99,7 +97,29 @@ if __name__ == "__main__":
 
                 if (ret == 1):
                     step = step + 1
+                    email_recover = emails_add[num_emails_add_in_use]
+                    num_emails_add_in_use += 1
 
+        # Open a new tab
         elif (step == STEP_REQUEST_FB_CODE):
+            ret = browser.open_new_tab("https://www.facebook.com/login/identify/?ctx=recover&ars=facebook_login&from_login_screen=0")
+            if (ret == 1):
+                step = step + 1
+
+        elif (step == STEP_FILL_EMAIL_RECOVER):
+            ret = browser.fill_email_recover(email_recover)
+            if (ret == 1):
+                step += 1
+
+        elif (step == STEP_FIND):
+            ret = browser.click_find()
+            if (ret == 1):
+                step += 1
+
+        elif (step == STEP_CLICK_CONTINUE):
+            ret = browser.click_continue()
+            if (ret == 1):
+                step += 1
+        
+        elif (step == NEXT_STEP):
             pass
-            
