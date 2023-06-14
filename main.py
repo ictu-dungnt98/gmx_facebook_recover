@@ -78,16 +78,17 @@ if __name__ == "__main__":
         elif (step == STEP_READ_EMAIL_LOGIN):
             if (num_mail_login_in_use < number_emails_login):
                 login_user, login_pass = login_emails[num_mail_login_in_use].split("|")
-                num_mail_login_in_use += 1
                 step = STEP_LOGIN_FILL_USER
 
         elif (step == STEP_LOGIN_FILL_USER):
+            login_user, login_pass = login_emails[num_mail_login_in_use].split("|")
             ret = browser.insert_username(login_user)
             if (ret):
                 ret = browser.click_lets_go()
                 step = STEP_LOGIN_FILL_PASS
 
         elif (step == STEP_LOGIN_FILL_PASS):
+            login_user, login_pass = login_emails[num_mail_login_in_use].split("|")
             ret = browser.insert_password(login_pass)
             if (ret):
                 step = STEP_ADD_MAIL
@@ -143,5 +144,8 @@ if __name__ == "__main__":
                     step += 1
 
         elif (step == STEP_CLOSE_TAB):
-            browser.close_current_tab()
+            num_mail_login_in_use += 1
             step = STEP_READ_EMAIL_LOGIN
+            browser.close_current_tab()
+            browser.back_to_login()
+
