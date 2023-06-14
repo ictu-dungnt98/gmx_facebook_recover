@@ -174,6 +174,7 @@ class Browser:
             self.driver.execute_script("arguments[0].value = '';", element)
             element.clear()
             element.send_keys(password)
+            element.send_keys(Keys.ENTER)
             return 1
         except:
             return 0
