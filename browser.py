@@ -11,28 +11,22 @@ import time
 import re as regex
 
 class Browser:
-    def __init__(self, path = "./chromedriver_win32/chromedriver.exe"):
+    def __init__(self):
         # self.driver
-        self.chrome_driver_parth = path
-        self.options = Options()
-        self.options.add_argument('--ignore-certificate-errors')
-        self.options.add_argument('--ignore-ssl-errors')
-        self.options.add_argument('--disable-software-rasterizer')
-        self.driver = webdriver.Chrome(self.chrome_driver_parth, chrome_options=self.options)
+        self.driver = webdriver.Chrome()
         self.policy_pass = 0
         self.ads_close = 0
         self.time_check_context = 1
 
     # open web page
-    def open_url(self, url = "https://customer.xfinity.com/users/me/update-username"):
+    def open_url(self, url = "google.com"):
         try:
             self.driver.get(url)
-            # self.driver.maximize_window()
-            # self.driver.implicitly_wait(5)
         except:
             return 0
         else:
             return 1
+
     def check_page_working(self):
         try:
             element = self.driver.find_element(By.XPATH, "//*[@id='reload-button']")
@@ -154,10 +148,9 @@ class Browser:
 
     # login-email
     def insert_username(self, user):
-        print("insert_username: " + user)
         try:
             wait = WebDriverWait(self.driver, 3)  # Maximum wait time of 3 seconds
-            element = wait.until(EC.presence_of_element_located((By.ID, "user")))
+            element = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='txtUserName']")))
             self.driver.execute_script("arguments[0].value = '';", element)
             element.clear()
             element.send_keys(user)
@@ -167,10 +160,9 @@ class Browser:
 
     # login-password
     def insert_password(self, password):
-        print("insert_password")
         try:
             wait = WebDriverWait(self.driver, 3)  # Maximum wait time of 3 seconds
-            element = wait.until(EC.presence_of_element_located((By.ID, "passwd")))
+            element = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='txtPassword']")))
             self.driver.execute_script("arguments[0].value = '';", element)
             element.clear()
             element.send_keys(password)

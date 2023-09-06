@@ -1,5 +1,4 @@
 from browser import Browser
-from fb_getcode import Facebook
 import time
 import signal
 import os
@@ -27,23 +26,11 @@ def signal_handler(sig, frame):
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)
 
-    # read mail login
-    file1 = open("mail_login.txt", "r")
-    login_emails = file1.readlines()
-    number_emails_login = len(login_emails)
-    num_mail_login_in_use = 0
-
-    # read mail add
-    file2 = open("input_data.txt", "r")
-    emails_add = file2.readlines()
-    number_emails_add = len(emails_add)
-    num_emails_add_in_use = 0
-
-    # clear output file
-    try:
-        os.remove("output.txt")
-    except:
-        pass
+    # read account login
+    file1 = open("login.txt", "r")
+    account = file1.readlines()
+    num_account = len(account)
+    num_account_used = 0
 
     # GMX start
     browser = Browser()
@@ -57,40 +44,30 @@ if __name__ == "__main__":
         if _exit == 1:
             exit(0)
             
-        if (browser.check_page_working() == 1):
-            continue
-
-        if (browser.check_page_working_2() == 1):
-            continue
-
-        if (browser.context_insert_login_mail()):
-            step = STEP_LOGIN_FILL_USER
-        elif (browser.context_insert_login_pass()):
-            step = STEP_LOGIN_FILL_PASS
-        elif (browser.context_add_mail()):
-            step = STEP_ADD_MAIL
-
         if (step == STEP_OPEN_URL):
-            ret = browser.open_url("https://customer.xfinity.com/users/me/update-username")
+            ret = browser.open_url("http://dangkytinchi.ictu.edu.vn/")
             if (ret == 1):
                 step = STEP_READ_EMAIL_LOGIN
 
         elif (step == STEP_READ_EMAIL_LOGIN):
-            if (num_mail_login_in_use < number_emails_login):
-                login_user, login_pass = login_emails[num_mail_login_in_use].split("|")
+            if (num_account_used < num_account):
+                login_user, login_pass = account[num_account_used].split("|")
+                print("insert_username: " + login_user)
+                print("insert_password: " + login_pass)
                 step = STEP_LOGIN_FILL_USER
 
         elif (step == STEP_LOGIN_FILL_USER):
-            login_user, login_pass = login_emails[num_mail_login_in_use].split("|")
+            login_user, login_pass = account[num_account_used].split("|")
             ret = browser.insert_username(login_user)
             if (ret):
                 ret = browser.click_lets_go()
                 step = STEP_LOGIN_FILL_PASS
 
         elif (step == STEP_LOGIN_FILL_PASS):
-            login_user, login_pass = login_emails[num_mail_login_in_use].split("|")
+            login_user, login_pass = account[num_account_used].split("|")
             ret = browser.insert_password(login_pass)
             if (ret):
+                print("succeess")
                 step = STEP_ADD_MAIL
 
         elif (step == STEP_ADD_MAIL):
@@ -144,7 +121,7 @@ if __name__ == "__main__":
                     step += 1
 
         elif (step == STEP_CLOSE_TAB):
-            num_mail_login_in_use += 1
+            num_account_used += 1
             step = STEP_READ_EMAIL_LOGIN
             browser.close_current_tab()
             browser.back_to_login()
