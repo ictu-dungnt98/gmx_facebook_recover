@@ -59,16 +59,15 @@ if __name__ == "__main__":
         elif (step == STEP_LOGIN_FILL_USER):
             login_user, login_pass = account[num_account_used].split("|")
             ret = browser.insert_username(login_user)
-            if (ret):
-                ret = browser.click_lets_go()
-                step = STEP_LOGIN_FILL_PASS
-
-        elif (step == STEP_LOGIN_FILL_PASS):
-            login_user, login_pass = account[num_account_used].split("|")
             ret = browser.insert_password(login_pass)
             if (ret):
                 print("succeess")
-                step = STEP_ADD_MAIL
+                step = STEP_LOGIN_FILL_PASS
+
+        elif (step == STEP_LOGIN_FILL_PASS):
+            pass
+            # if (ret):
+            #     step = STEP_ADD_MAIL
 
         elif (step == STEP_ADD_MAIL):
             if (num_emails_add_in_use < number_emails_add):

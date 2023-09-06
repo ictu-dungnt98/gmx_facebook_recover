@@ -10,6 +10,8 @@ from selenium.webdriver.common.action_chains import ActionChains
 import time
 import re as regex
 
+from selenium.common.exceptions import UnexpectedAlertPresentException
+
 class Browser:
     def __init__(self):
         # self.driver
@@ -168,7 +170,12 @@ class Browser:
             element.send_keys(password)
             element.send_keys(Keys.ENTER)
             return 1
+        except UnexpectedAlertPresentException:
+            alert = self.driver.switch_to.alert
+            alert.accept()
+            return 1
         except:
+            print("insert_password error")
             return 0
 
     def context_insert_login_mail(self):
