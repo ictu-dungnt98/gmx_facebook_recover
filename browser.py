@@ -113,21 +113,62 @@ class Browser:
             print("insert_password error")
             return 0
     
-    def select_subject(self):
-        wait = WebDriverWait(self.driver, 3)
-        element = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='drpCourse']")))
-
-        # chon mon hoc
-        # action = ActionChains(self.driver)
-        # action.click(on_element = element)
-        # action.perform()
-        select = Select(element)
-        select.select_by_visible_text("Dịch tễ học (2 TC)")
-
-        # click hien thi lop
-        # //*[@id="btnViewCourseClass"]
-        element = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='btnViewCourseClass']")))
-        element.click()
+    def select_subject(self, subject_string):
+        try:
+            wait = WebDriverWait(self.driver, 3)
+            element = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='drpCourse']")))
+            # chon mon hoc
+            select = Select(element)
+            select.select_by_visible_text(subject_string)
+            # click hien thi lop
+            element = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='btnViewCourseClass']")))
+            element.click()
+            # click chon lop hoc phan
+            if (subject_string == "Gây mê hồi sức (2 TC)"):
+                # click chọn học phần lý thuyết
+                element = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/form/table[3]/tbody/tr[7]/td/div/table/tbody/tr[5]/td[2]/input[1]")))
+                element.click()
+                # click chọn học phần thực hành
+                element = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/form/table[3]/tbody/tr[7]/td/div/table/tbody/tr[7]/td[2]/input[1]")))
+                element.click()
+            elif (subject_string == "Kiểm soát nhiễm khuẩn (2 TC)"):
+                # click chon hoc phan ly thuyet
+                element = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/form/table[3]/tbody/tr[7]/td/div/table/tbody/tr[4]/td[2]/input[1]")))
+                element.click()
+                # click chọn học phần thực hành
+                element = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/form/table[3]/tbody/tr[7]/td/div/table/tbody/tr[5]/td[2]/input[1]")))
+                element.click()
+            elif (subject_string == "Mô phỏng nha khoa (3 TC)"):
+                # click chon hoc phan ly thuyet
+                element = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/form/table[3]/tbody/tr[7]/td/div/table/tbody/tr[4]/td[2]/input[1]")))
+                element.click()
+            elif (subject_string == "Ngoại cơ sở (4 TC)"):
+                # click chon hoc phan ly thuyet
+                element = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/form/table[3]/tbody/tr[7]/td/div/table/tbody/tr[2]/td[2]/input[1]")))
+                element.click()
+                # click chọn học phần thực hành
+                element = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/form/table[3]/tbody/tr[7]/td/div/table/tbody/tr[3]/td[2]/input[1]")))
+                element.click()
+            elif (subject_string == "Nội cơ sở (4 TC)"):
+                # click chon hoc phan ly thuyet
+                element = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/form/table[3]/tbody/tr[7]/td/div/table/tbody/tr[2]/td[2]/input[1]")))
+                element.click()
+                # click chọn học phần thực hành
+                element = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/form/table[3]/tbody/tr[7]/td/div/table/tbody/tr[3]/td[2]/input[1]")))
+                element.click()
+            elif (subject_string == "TCQLYT - Chương trình YT quốc gia - Dân số (2 TC)"):
+                # click chon hoc phan ly thuyet
+                element = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/form/table[3]/tbody/tr[7]/td/div/table/tbody/tr[2]/td[2]/input[1]")))
+                element.click()
+            elif (subject_string == "Tư tưởng Hồ Chí Minh (2 TC)"):
+                # click chon hoc phan ly thuyet
+                element = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/form/table[3]/tbody/tr[7]/td/div/table/tbody/tr[2]/td[2]/input[1]")))
+                element.click()
+            # click dang ky
+            element = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='btnUpgradeMark']")))
+            element.click()
+        except:
+            pass
 
     def context_insert_login_mail(self):
         print("context_insert_login_mail")

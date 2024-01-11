@@ -65,7 +65,13 @@ if __name__ == "__main__":
                 step = STEP_SELECT_SUBJECT
 
         elif (step == STEP_SELECT_SUBJECT):
-            browser.select_subject()
+            browser.select_subject("Gây mê hồi sức (2 TC)")
+            browser.select_subject("Kiểm soát nhiễm khuẩn (2 TC)")
+            browser.select_subject("Mô phỏng nha khoa (3 TC)")
+            browser.select_subject("Ngoại cơ sở (4 TC)")
+            browser.select_subject("Nội cơ sở (4 TC)")
+            browser.select_subject("TCQLYT - Chương trình YT quốc gia - Dân số (2 TC)")
+            browser.select_subject("Tư tưởng Hồ Chí Minh (2 TC)")
             step = step + 1
         elif (step == STEP_REQUEST_FB_CODE):
             pass
