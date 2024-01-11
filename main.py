@@ -61,7 +61,7 @@ if __name__ == "__main__":
             ret = browser.insert_username(login_user)
             ret = browser.insert_password(login_pass)
             if (ret):
-                print("succeess")
+                print("login succeess")
                 step = STEP_SELECT_SUBJECT
 
         elif (step == STEP_SELECT_SUBJECT):
@@ -74,4 +74,5 @@ if __name__ == "__main__":
             browser.select_subject("Tư tưởng Hồ Chí Minh (2 TC)")
             step = step + 1
         elif (step == STEP_REQUEST_FB_CODE):
-            pass
+            print("Register subject succeess")
+            exit(0)
