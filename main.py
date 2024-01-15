@@ -60,9 +60,9 @@ if __name__ == "__main__":
             login_user, login_pass = account[num_account_used].split("|")
             ret = browser.insert_username(login_user)
             ret = browser.insert_password(login_pass)
-            if (ret):
-                print("login succeess")
-                step = STEP_SELECT_SUBJECT
+            # if (ret):
+            print("login succeess")
+            step = STEP_SELECT_SUBJECT
 
         elif (step == STEP_SELECT_SUBJECT):
             browser.select_subject("Gây mê hồi sức (2 TC)")
@@ -73,6 +73,6 @@ if __name__ == "__main__":
             browser.select_subject("TCQLYT - Chương trình YT quốc gia - Dân số (2 TC)")
             browser.select_subject("Tư tưởng Hồ Chí Minh (2 TC)")
             step = step + 1
+            pass
         elif (step == STEP_REQUEST_FB_CODE):
             print("Register subject succeess")
-            exit(0)

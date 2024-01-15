@@ -165,7 +165,7 @@ class Browser:
                 element = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/form/table[3]/tbody/tr[7]/td/div/table/tbody/tr[2]/td[2]/input[1]")))
                 element.click()
             # click dang ky
-            element = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='btnUpgradeMark']")))
+            element = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/form/table[4]/tbody/tr[1]/td/input[9]")))
             element.click()
         except:
             pass
